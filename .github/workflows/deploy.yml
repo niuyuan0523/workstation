@@ -5,15 +5,32 @@ on:
     branches: ["main"]
   workflow_dispatch:
 
+# 核心修改 1：官方原生部署必须配置这些特定权限
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# 允许同一个工作流的多次运行相互覆盖队列，避免多次点击排队冲突
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
 jobs:
   build-and-deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4 # 升级到最新 v4 更加稳定
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4 # 核心修改 2：初始化 GitHub 官方 Pages 部署环境
 
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: 18
 
@@ -28,15 +45,17 @@ jobs:
       - name: Prepare Deploy Files
         run: |
           mkdir -p build/3d-display
-          cp index.html build/
-          cp projects.js build/
+          cp index.html build/ || echo "Warning: index.html not found"
+          cp projects.js build/ || echo "Warning: projects.js not found"
           cp -r 3d-display/dist/* build/3d-display/ || echo "Warning: dist folder not found"
           echo "Build complete!"
           ls -la build/
 
-      - name: Deploy to GitHub Pages
-        uses: JamesIves/github-pages-deploy-action@v4
+      - name: Upload Artifact
+        uses: actions/upload-pages-artifact@v3 # 核心修改 3：将打包好的 build 文件夹上传为 Pages 官方工件
         with:
-          folder: build
-          branch: gh-pages
-          clean: true
+          path: './build'
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4 # 核心修改 4：直接发布工件，不再使用 gh-pages 分支
