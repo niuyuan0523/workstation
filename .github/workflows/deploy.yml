@@ -23,10 +23,10 @@ jobs:
     steps:
       # 1. 显式指定使用 main 分支的 checkout
       - name: Checkout
-        uses: actions/checkout@main
+        uses: actions/checkout@v4
 
       - name: Setup Node.js
-        uses: actions/setup-node@main
+        uses: actions/setup-node@v4
         with:
           node-version: 18
 
@@ -49,10 +49,10 @@ jobs:
 
       # 2. 显式指定使用 main 分支的上传和部署工具，绕过刚才报错的特定版本
       - name: Upload Artifact
-        uses: actions/upload-pages-artifact@main
+        uses: actions/upload-pages-artifact@v3
         with:
           path: './build'
 
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@main
+        uses: actions/deploy-pages@v4
