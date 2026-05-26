@@ -52,7 +52,7 @@ jobs:
           ls -la build/
 
       - name: Upload Artifact
-        uses: actions/upload-pages-artifact@v3 # 核心修改 3：将打包好的 build 文件夹上传为 Pages 官方工件
+        uses: actions/upload-pages-artifact@v2 # 核心修改 3：将打包好的 build 文件夹上传为 Pages 官方工件
         with:
           path: './build'
 
