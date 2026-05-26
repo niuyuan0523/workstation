@@ -21,12 +21,13 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
-      # 1. 显式指定使用 main 分支的 checkout
+      # 锁定具体版本 v4.1.6 
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v4.1.6
 
+      # 锁定具体版本 v4.0.5
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v4.0.5
         with:
           node-version: 18
 
@@ -45,14 +46,14 @@ jobs:
           cp projects.js build/ || echo "Warning: projects.js not found"
           cp -r 3d-display/dist/* build/3d-display/ || echo "Warning: dist folder not found"
           echo "Build complete!"
-          ls -la build/
 
-      # 2. 显式指定使用 main 分支的上传和部署工具，绕过刚才报错的特定版本
+      # 🔥 核心修改：锁定为已经极其成熟的 v3.4.0 版本，绝不给官方服务器现生成 SHA 的机会
       - name: Upload Artifact
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v3.4.0
         with:
           path: './build'
 
+      # 🔥 核心修改：锁定为已经极其成熟的 v4.0.5 版本
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v4.0.5
