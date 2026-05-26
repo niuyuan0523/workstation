@@ -3,39 +3,20 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches: ["main"]
-  # 允许手动触发工作流
   workflow_dispatch:
 
-# 设置 GITHUB_TOKEN 的权限
-permissions:
-  contents: read
-  pages: write
-  id-token: write
-
-# 允许一个并发部署
-concurrency:
-  group: "pages"
-  cancel-in-progress: false
-
 jobs:
-  # 构建和部署任务
   build-and-deploy:
     runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v3
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v3
         with:
           node-version: 18
-          cache: 'npm'
-          cache-dependency-path: './3d-display/package-lock.json'
 
-      # --- 构建 3D 展示项目 ---
       - name: Install Dependencies
         run: npm ci
         working-directory: ./3d-display
@@ -44,39 +25,18 @@ jobs:
         run: npm run build
         working-directory: ./3d-display
 
-      # --- 准备部署目录 ---
-      - name: Prepare Deploy Directory
+      - name: Prepare Deploy Files
         run: |
-          # 创建部署目录
-          mkdir -p deploy/3d-display
-          
-          # 复制主页面文件（无需构建）
-          cp index.html deploy/
-          cp projects.js deploy/
-          
-          # 复制 3D 展示项目的构建产物
-          if [ -d "3d-display/dist" ]; then
-            cp -r 3d-display/dist/* deploy/3d-display/
-            echo "✓ 3D 展示项目构建产物已复制"
-          else
-            echo "✗ 警告: 3d-display/dist 目录不存在"
-            mkdir -p deploy/3d-display
-            echo "<h1>构建失败</h1><p>请检查 3d-display 项目</p>" > deploy/3d-display/index.html
-          fi
-          
-          # 显示部署目录结构
-          echo "\n=== 部署目录结构 ==="
-          ls -la deploy/
-          echo "\n=== 3d-display 目录 ==="
-          ls -la deploy/3d-display/ || echo "(空目录)"
+          mkdir -p build/3d-display
+          cp index.html build/
+          cp projects.js build/
+          cp -r 3d-display/dist/* build/3d-display/ || echo "Warning: dist folder not found"
+          echo "Build complete!"
+          ls -la build/
 
-      # --- 上传构建产物 ---
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: './deploy'
-
-      # --- 部署到 GitHub Pages ---
       - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: build
+          branch: gh-pages
+          clean: true
