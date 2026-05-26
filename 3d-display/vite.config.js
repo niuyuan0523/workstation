@@ -1,10 +1,11 @@
 import { defineConfig } from 'vite'
 
 export default defineConfig({
-  // 设置基础路径，用于 GitHub Pages 部署
-  // 如果部署到 https://username.github.io/repo-name/3d-display/，则使用 '/repo-name/3d-display/'
-  base: './',
+  // GitHub Pages 子目录部署路径
+  // 访问地址： https://Niuyuan0523.github.io/workstation/3d-display/
+  base: '/workstation/3d-display/',
   server: {
+    // 本地开发时自动打开浏览器
     open: true
   },
   build: {
