@@ -15,12 +15,15 @@ permissions:
 # 允许一个并发部署
 concurrency:
   group: "pages"
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
-  # 构建任务
-  build:
+  # 构建和部署任务
+  build-and-deploy:
     runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -52,13 +55,20 @@ jobs:
           cp projects.js deploy/
           
           # 复制 3D 展示项目的构建产物
-          cp -r 3d-display/dist/* deploy/3d-display/
+          if [ -d "3d-display/dist" ]; then
+            cp -r 3d-display/dist/* deploy/3d-display/
+            echo "✓ 3D 展示项目构建产物已复制"
+          else
+            echo "✗ 警告: 3d-display/dist 目录不存在"
+            mkdir -p deploy/3d-display
+            echo "<h1>构建失败</h1><p>请检查 3d-display 项目</p>" > deploy/3d-display/index.html
+          fi
           
           # 显示部署目录结构
-          echo "部署目录结构："
+          echo "\n=== 部署目录结构 ==="
           ls -la deploy/
-          echo "\n3d-display 目录："
-          ls -la deploy/3d-display/
+          echo "\n=== 3d-display 目录 ==="
+          ls -la deploy/3d-display/ || echo "(空目录)"
 
       # --- 上传构建产物 ---
       - name: Upload artifact
@@ -66,14 +76,7 @@ jobs:
         with:
           path: './deploy'
 
-  # 部署任务
-  deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
+      # --- 部署到 GitHub Pages ---
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
