@@ -1,0 +1,224 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的项目集合 | GitHub Pages Demo</title>
+    <script src="./projects.js"></script>
+    <!-- 引入 Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 引入 Font Awesome 图标 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- 自定义配置 Tailwind 主题色 -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3b82f6',
+                        secondary: '#8b5cf6',
+                        dark: '#0f172a',
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* 自定义滚动条 */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1e293b; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #475569; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #64748b; 
+        }
+        .glass-effect {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+    </style>
+</head>
+<body class="bg-dark text-slate-200 min-h-screen font-sans selection:bg-primary selection:text-white">
+
+    <!-- 背景装饰 -->
+    <div class="fixed inset-0 z-[-1] overflow-hidden pointer-events-none">
+        <div class="absolute top-[-10%] left-[-10%] w-96 h-96 bg-primary/20 rounded-full blur-3xl animate-float"></div>
+        <div class="absolute bottom-[-10%] right-[-10%] w-96 h-96 bg-secondary/20 rounded-full blur-3xl animate-float" style="animation-delay: 2s;"></div>
+    </div>
+
+    <!-- 头部导航 -->
+    <header class="w-full py-6 px-4 md:px-8 glass-effect sticky top-0 z-50 border-b border-slate-700/50">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <i class="fa-brands fa-github text-3xl text-white"></i>
+                <h1 class="text-xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
+                    DevPortfolio
+                </h1>
+            </div>
+            <div class="text-sm text-slate-400 hidden md:block">
+                <i class="fa-solid fa-server mr-2"></i>GitHub Pages Multi-Project Demo
+            </div>
+        </div>
+    </header>
+
+    <!-- 主要内容区域 -->
+    <main class="max-w-7xl mx-auto px-4 py-12">
+        
+        <!-- 欢迎标语 -->
+        <div class="text-center mb-16 space-y-4">
+            <h2 class="text-4xl md:text-5xl font-extrabold text-white tracking-tight">
+                探索我的 <span class="text-primary">前端作品</span>
+            </h2>
+            <p class="text-lg text-slate-400 max-w-2xl mx-auto">
+                这里部署了多个独立的前端项目。所有项目均托管在同一个 GitHub 仓库的不同子路径下。
+            </p>
+        </div>
+
+        <!-- 项目网格 -->
+        <div id="projects-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- 项目卡片将通过 JavaScript 动态生成 -->
+            <div class="col-span-full text-center py-12 text-slate-400">
+                <i class="fa-solid fa-spinner fa-spin text-3xl mb-4"></i>
+                <p>正在加载项目...</p>
+            </div>
+        </div>
+
+        <!-- 技术说明区域 -->
+        <div class="mt-20 p-8 rounded-2xl bg-slate-800/50 border border-slate-700">
+            <h3 class="text-lg font-semibold text-white mb-4"><i class="fa-solid fa-circle-info mr-2 text-primary"></i>部署架构说明</h3>
+            <div class="grid md:grid-cols-2 gap-6 text-sm text-slate-400">
+                <div>
+                    <h4 class="text-slate-200 font-medium mb-2">如何访问子项目？</h4>
+                    <p>每个子项目都部署在仓库的子目录中。例如：<code class="bg-slate-900 px-1 py-0.5 rounded text-blue-300">/project-a/</code>。这是因为 GitHub Pages 对于非 user.github.io 仓库，默认将仓库名作为根路径。</p>
+                </div>
+                <div>
+                    <h4 class="text-slate-200 font-medium mb-2">关键技术点</h4>
+                    <ul class="list-disc list-inside space-y-1">
+                        <li>Vite/Webpack 配置了 <code class="text-purple-300">base: '/repo-name/project-name/'</code></li>
+                        <li>React Router/Vue Router 使用了 History 模式并设置了 basename</li>
+                        <li>通过 GitHub Actions 自动构建并合并到 gh-pages 分支</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- 页脚 -->
+    <footer class="border-t border-slate-800 mt-12 py-8 text-center text-slate-500 text-sm">
+        <p>&copy; 2026 My Portfolio. Hosted on GitHub Pages.</p>
+        <div class="mt-2 space-x-4">
+            <a href="https://github.com/Niuyuan0523" target="_blank" class="hover:text-white transition-colors"><i class="fa-brands fa-github"></i> GitHub</a>
+            <a href="#" class="hover:text-white transition-colors"><i class="fa-brands fa-twitter"></i> Twitter</a>
+        </div>
+    </footer>
+
+    <!-- 动态加载项目卡片的脚本 -->
+    <script>
+
+        // 生成项目卡片 HTML
+        function generateProjectCard(project) {
+            const colors = colorMap[project.color] || colorMap.blue;
+            const isComingSoon = project.status === 'coming-soon';
+
+            if (isComingSoon) {
+                return `
+                    <a href="${project.url}" class="group relative block h-full opacity-60 cursor-not-allowed">
+                        <div class="relative h-full bg-slate-800/50 rounded-2xl p-6 flex flex-col justify-between border border-slate-700 border-dashed">
+                            <div>
+                                <div class="w-12 h-12 ${colors.bg} rounded-lg flex items-center justify-center mb-4 ${colors.text}">
+                                    <i class="fa-solid ${project.icon} text-xl"></i>
+                                </div>
+                                <h3 class="text-xl font-bold text-slate-300 mb-2">${project.title}</h3>
+                                <p class="text-slate-500 text-sm leading-relaxed">
+                                    ${project.description}
+                                </p>
+                            </div>
+                            <div class="mt-6 flex items-center justify-between">
+                                <span class="text-xs font-mono ${colors.linkText} bg-slate-900/50 px-2 py-1 rounded">${project.tech}</span>
+                            </div>
+                        </div>
+                    </a>
+                `;
+            }
+
+            return `
+                <a href="${project.url}" class="group relative block h-full">
+                    <div class="absolute -inset-0.5 bg-gradient-to-r ${colors.gradient} rounded-2xl opacity-75 group-hover:opacity-100 transition duration-500 blur"></div>
+                    <div class="relative h-full bg-slate-800 rounded-2xl p-6 flex flex-col justify-between border border-slate-700 hover:border-transparent transition-all duration-300 transform group-hover:-translate-y-1">
+                        <div>
+                            <div class="w-12 h-12 ${colors.bg} rounded-lg flex items-center justify-center mb-4 ${colors.text} group-hover:text-white ${colors.hoverBg} transition-colors">
+                                <i class="fa-solid ${project.icon} text-xl"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-white mb-2">${project.title}</h3>
+                            <p class="text-slate-400 text-sm leading-relaxed">
+                                ${project.description}
+                            </p>
+                        </div>
+                        <div class="mt-6 flex items-center justify-between">
+                            <span class="text-xs font-mono text-slate-500 bg-slate-900 px-2 py-1 rounded">${project.tech}</span>
+                            <span class="${colors.linkText} group-hover:translate-x-1 transition-transform">
+                                访问项目 <i class="fa-solid fa-arrow-right ml-1"></i>
+                            </span>
+                        </div>
+                    </div>
+                </a>
+            `;
+        }
+
+
+        // 加载并渲染项目
+        function loadProjects() {
+            const grid = document.getElementById('projects-grid');
+            
+            try {
+                const projects = projectsConfig.projects || [];
+                
+                if (projects.length === 0) {
+                    grid.innerHTML = `
+                        <div class="col-span-full text-center py-12 text-slate-400">
+                            <i class="fa-solid fa-inbox text-3xl mb-4"></i>
+                            <p>暂无项目</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                // 生成所有项目卡片
+                grid.innerHTML = projects.map(project => generateProjectCard(project)).join('');
+                
+            } catch (error) {
+                console.error('加载项目失败:', error);
+                grid.innerHTML = `
+                    <div class="col-span-full text-center py-12 text-red-400">
+                        <i class="fa-solid fa-triangle-exclamation text-3xl mb-4"></i>
+                        <p>加载项目失败: ${error.message}</p>
+                    </div>
+                `;
+            }
+        }
+
+        // 页面加载完成后执行
+        document.addEventListener('DOMContentLoaded', loadProjects);
+    </script>
+
+</body>
+</html>

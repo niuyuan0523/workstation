@@ -1,0 +1,7 @@
+crystal-viewer/
+├── index.html
+├── package.json
+├── vite.config.js
+└── src/
+    ├── main.js
+    └── CrystalViewer.js

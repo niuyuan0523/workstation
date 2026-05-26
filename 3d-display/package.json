@@ -1,0 +1,22 @@
+{
+  "name": "3d-display",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "three": "^0.158.0"
+  },
+  "devDependencies": {
+    "vite": "^4.5.5"
+  },
+  "main": "src/main.js",
+  "keywords": [],
+  "author": "niuyuan",
+  "license": "ISC",
+  "description": "一个基于Three.js的交互式3D晶体结构可视化系统，用于展示不同晶系的立方体及其对称面。"
+}
