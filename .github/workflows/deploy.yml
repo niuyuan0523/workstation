@@ -19,15 +19,15 @@ jobs:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
+    # 💡 关键修改 1：换成具体的系统版本，强制 GitHub 切换虚拟机机房，避开之前死活下载失败的网络节点
+    runs-on: ubuntu-22.04
     steps:
-      # 锁定具体版本 v4.1.6 
+      # 💡 关键修改 2：全部恢复为官方最标准的单数字大版本号，确保 GitHub 绝对能识别
       - name: Checkout
-        uses: actions/checkout@v4.1.6
+        uses: actions/checkout@v4
 
-      # 锁定具体版本 v4.0.5
       - name: Setup Node.js
-        uses: actions/setup-node@v4.0.5
+        uses: actions/setup-node@v4
         with:
           node-version: 18
 
@@ -47,13 +47,11 @@ jobs:
           cp -r 3d-display/dist/* build/3d-display/ || echo "Warning: dist folder not found"
           echo "Build complete!"
 
-      # 🔥 核心修改：锁定为已经极其成熟的 v3.4.0 版本，绝不给官方服务器现生成 SHA 的机会
       - name: Upload Artifact
-        uses: actions/upload-pages-artifact@v3.4.0
+        uses: actions/upload-pages-artifact@v3
         with:
           path: './build'
 
-      # 🔥 核心修改：锁定为已经极其成熟的 v4.0.5 版本
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4.0.5
+        uses: actions/deploy-pages@v4
