@@ -19,10 +19,8 @@ jobs:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-    # 💡 关键修改 1：换成具体的系统版本，强制 GitHub 切换虚拟机机房，避开之前死活下载失败的网络节点
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     steps:
-      # 💡 关键修改 2：全部恢复为官方最标准的单数字大版本号，确保 GitHub 绝对能识别
       - name: Checkout
         uses: actions/checkout@v4
 
