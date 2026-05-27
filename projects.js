@@ -52,7 +52,7 @@ const projectsConfig = {
             tech: "Three.js / Vite",
             icon: "fa-cube",
             color: "blue",
-            url: "./3d-display/dist/",
+            url: "./3d-display/",
             status: "active"
         },
         {
