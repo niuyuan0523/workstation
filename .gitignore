@@ -1,6 +1,6 @@
 # 依赖目录
 node_modules/
-package-lock.json
+# package-lock.json
 
 # 编辑器
 .vscode/
