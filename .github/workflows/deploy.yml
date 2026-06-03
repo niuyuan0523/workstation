@@ -14,6 +14,13 @@ concurrency:
   group: "pages"
   cancel-in-progress: true
 
+env:
+  # 配置目标仓库信息
+  TARGET_REPO_OWNER: "${{ github.repository_owner }}"  # 当前仓库所有者（你自己）
+  TARGET_REPO_NAME: "hive-ui-demo"                     # 目标仓库名称
+  TARGET_RELEASE_TAG: "latest"                         # 使用最新的 Release
+  TARGET_ASSET_NAME: "hive-ui-release.zip"             # 要下载的资产文件名（请根据实际调整）
+
 jobs:
   build-and-deploy:
     environment:
@@ -24,6 +31,53 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Download Release Asset using PAT
+        env:
+          GH_TOKEN: ${{ secrets.DOWNLOAD_PAT }}
+        run: |
+          echo "Downloading release asset from ${TARGET_REPO_OWNER}/${TARGET_REPO_NAME}..."
+          
+          # 获取最新的 release 信息（latest 是特殊关键字）
+          if [ "${TARGET_RELEASE_TAG}" = "latest" ]; then
+            RELEASE_API="repos/${TARGET_REPO_OWNER}/${TARGET_REPO_NAME}/releases/latest"
+          else
+            RELEASE_API="repos/${TARGET_REPO_OWNER}/${TARGET_REPO_NAME}/releases/tags/${TARGET_RELEASE_TAG}"
+          fi
+          
+          RELEASE_INFO=$(gh api ${RELEASE_API})
+          
+          # 输出所有可用的资产（方便调试）
+          echo "========================================"
+          echo "可用的资产文件列表："
+          echo "$RELEASE_INFO" | jq -r '.assets[] | "  - \(.name) (大小: \(.size) bytes)"'
+          echo "========================================"
+          
+          # 获取资产 ID
+          ASSET_ID=$(echo $RELEASE_INFO | jq -r '.assets[] | select(.name == "'"${TARGET_ASSET_NAME}"'") | .id')
+          
+          if [ -z "$ASSET_ID" ] || [ "$ASSET_ID" = "null" ]; then
+            echo "Error: Asset '${TARGET_ASSET_NAME}' not found in release '${TARGET_RELEASE_TAG}'"
+            echo "Available assets:"
+            echo $RELEASE_INFO | jq -r '.assets[].name'
+            exit 1
+          fi
+          
+          echo "Found asset ID: ${ASSET_ID}"
+          
+          # 下载资产
+          gh api repos/${TARGET_REPO_OWNER}/${TARGET_REPO_NAME}/releases/assets/${ASSET_ID} \
+            --header 'Accept: application/octet-stream' \
+            --output "./${TARGET_ASSET_NAME}"
+          
+          echo "Successfully downloaded ${TARGET_ASSET_NAME}"
+          
+          # 如果是 zip 文件，解压到 hive-ui 目录
+          if [[ "${TARGET_ASSET_NAME}" == *.zip ]]; then
+            mkdir -p hive-ui
+            unzip -o "./${TARGET_ASSET_NAME}" -d hive-ui/
+            echo "Extracted to hive-ui/"
+          fi
+        
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -40,10 +94,23 @@ jobs:
       - name: Prepare Deploy Files
         run: |
           mkdir -p build/3d-display
+          
+          # 复制 workstation 的文件
           cp index.html build/ || echo "Warning: index.html not found"
           cp projects.js build/ || echo "Warning: projects.js not found"
           cp -r 3d-display/dist/* build/3d-display/ || echo "Warning: dist folder not found"
+          
+          # 复制从 hive-ui-demo 下载的文件
+          if [ -d "hive-ui" ]; then
+            cp -r hive-ui/* build/ 2>/dev/null || echo "Warning: hive-ui folder is empty"
+            echo "Copied hive-ui files to build/"
+          else
+            echo "Warning: hive-ui folder not found"
+          fi
+          
           echo "Build complete!"
+          echo "Files in build/:"
+          ls -la build/
 
       - name: Upload Artifact
         uses: actions/upload-pages-artifact@v3
