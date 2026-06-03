@@ -57,12 +57,12 @@ const projectsConfig = {
         },
         {
             id: "project-b",
-            title: "Vue 3 管理系统",
-            description: "基于 Vue 3 + Vite + Element Plus 构建的后台管理模板。演示了路由权限、动态菜单和数据可视化。",
+            title: "Hive-UI组件库展示",
+            description: "Hive-UI 是一个基于 Vue 3 的组件库，提供了丰富的组件和功能，帮助开发者快速构建美观且功能丰富的 Web 应用。",
             tech: "Vue 3 / Vite",
             icon: "fa-rocket",
             color: "purple",
-            url: "./project-a/",
+            url: "./hive-ui/",
             status: "active"
         },
         {
