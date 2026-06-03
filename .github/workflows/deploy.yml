@@ -64,10 +64,10 @@ jobs:
           
           echo "Found asset ID: ${ASSET_ID}"
           
-          # 下载资产
+          # 下载资产（使用重定向而不是 --output）
           gh api repos/${TARGET_REPO_OWNER}/${TARGET_REPO_NAME}/releases/assets/${ASSET_ID} \
             --header 'Accept: application/octet-stream' \
-            --output "./${TARGET_ASSET_NAME}"
+            > "./${TARGET_ASSET_NAME}"
           
           echo "Successfully downloaded ${TARGET_ASSET_NAME}"
           
