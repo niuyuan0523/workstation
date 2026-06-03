@@ -120,13 +120,22 @@ jobs:
             echo "✗ Warning: 3d-display/dist folder not found"
           fi
           
-          # 3. 最后复制 hive-ui 文件（避免覆盖根文件）
+          # 3. 最后复制 hive-ui 文件到 build/hive-ui/ 目录
           if [ -d "hive-ui" ] && [ "$(ls -A hive-ui 2>/dev/null)" ]; then
-            # 使用 rsync 避免覆盖已存在的文件
-            rsync -av --ignore-existing hive-ui/ build/
-            echo "✓ Copied hive-ui files (without overwriting existing files)"
+            mkdir -p build/hive-ui
+            rsync -av --ignore-existing hive-ui/ build/hive-ui/
+            echo "✓ Copied hive-ui files to build/hive-ui/"
+            echo ""
+            echo "hive-ui/ 目录内容:"
+            ls -la hive-ui/
+            echo ""
+            echo "build/hive-ui/ 目录内容:"
+            ls -la build/hive-ui/
           else
             echo "ℹ hive-ui folder is empty or not found, skipping"
+            echo ""
+            echo "当前目录内容:"
+            ls -la
           fi
           
           # 显示最终的构建文件列表
