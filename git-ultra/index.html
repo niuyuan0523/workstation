@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Git Ultra - 智能Git工作流增强工具</title>
+    <!-- 引入 Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 引入 Font Awesome 图标 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- 自定义配置 Tailwind 主题色 -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3b82f6',
+                        secondary: '#8b5cf6',
+                        dark: '#0f172a',
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* 自定义滚动条 */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1e293b; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #475569; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #64748b; 
+        }
+        .glass-effect {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+    </style>
+</head>
+<body class="bg-dark text-slate-200 min-h-screen font-sans selection:bg-primary selection:text-white">
+
+    <!-- 背景装饰 -->
+    <div class="fixed inset-0 z-[-1] overflow-hidden pointer-events-none">
+        <div class="absolute top-[-10%] left-[-10%] w-96 h-96 bg-primary/20 rounded-full blur-3xl animate-float"></div>
+        <div class="absolute bottom-[-10%] right-[-10%] w-96 h-96 bg-secondary/20 rounded-full blur-3xl animate-float" style="animation-delay: 2s;"></div>
+    </div>
+
+    <!-- 头部导航 -->
+    <header class="w-full py-6 px-4 md:px-8 glass-effect sticky top-0 z-50 border-b border-slate-700/50">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <i class="fa-brands fa-git-alt text-3xl text-white"></i>
+                <h1 class="text-xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
+                    Git Ultra
+                </h1>
+            </div>
+            <a href="../index.html" class="text-sm text-slate-400 hover:text-white transition-colors">
+                <i class="fa-solid fa-house mr-2"></i>返回首页
+            </a>
+        </div>
+    </header>
+
+    <!-- 主要内容区域 -->
+    <main class="max-w-7xl mx-auto px-4 py-12 space-y-12">
+        
+        <!-- 欢迎标语 -->
+        <div class="text-center space-y-4">
+            <h2 class="text-4xl md:text-5xl font-extrabold text-white tracking-tight">
+                🚀 Git <span class="text-primary">Ultra</span>
+            </h2>
+            <p class="text-lg text-slate-400 max-w-3xl mx-auto">
+                一个功能强大的Git命令行工具，集成了AI辅助提交信息生成功能，帮助开发团队提高代码提交效率和质量。
+            </p>
+        </div>
+
+        <!-- 功能特性 -->
+        <section class="glass-effect rounded-2xl p-8 border border-slate-700">
+            <h3 class="text-2xl font-bold text-white mb-6">
+                <i class="fa-solid fa-sparkles mr-2 text-primary"></i>✨ 功能特性
+            </h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="bg-slate-800/50 rounded-xl p-6 border border-slate-700 hover:border-primary/50 transition-colors">
+                    <div class="w-12 h-12 bg-blue-500/20 rounded-lg flex items-center justify-center mb-4 text-blue-400">
+                        <i class="fa-solid fa-robot text-xl"></i>
+                    </div>
+                    <h4 class="text-lg font-semibold text-white mb-2">AI辅助提交</h4>
+                    <p class="text-slate-400 text-sm">支持GitHub Models(免费)/DeepSeek AI/Ollama本地AI，自动生成符合规范的提交信息</p>
+                </div>
+                <div class="bg-slate-800/50 rounded-xl p-6 border border-slate-700 hover:border-primary/50 transition-colors">
+                    <div class="w-12 h-12 bg-purple-500/20 rounded-lg flex items-center justify-center mb-4 text-purple-400">
+                        <i class="fa-solid fa-file-lines text-xl"></i>
+                    </div>
+                    <h4 class="text-lg font-semibold text-white mb-2">规范化提交</h4>
+                    <p class="text-slate-400 text-sm">支持Conventional Commits规范的交互式提交</p>
+                </div>
+                <div class="bg-slate-800/50 rounded-xl p-6 border border-slate-700 hover:border-primary/50 transition-colors">
+                    <div class="w-12 h-12 bg-green-500/20 rounded-lg flex items-center justify-center mb-4 text-green-400">
+                        <i class="fa-solid fa-tags text-xl"></i>
+                    </div>
+                    <h4 class="text-lg font-semibold text-white mb-2">版本标签管理</h4>
+                    <p class="text-slate-400 text-sm">便捷的版本标签创建和推送</p>
+                </div>
+                <div class="bg-slate-800/50 rounded-xl p-6 border border-slate-700 hover:border-primary/50 transition-colors">
+                    <div class="w-12 h-12 bg-yellow-500/20 rounded-lg flex items-center justify-center mb-4 text-yellow-400">
+                        <i class="fa-solid fa-code-branch text-xl"></i>
+                    </div>
+                    <h4 class="text-lg font-semibold text-white mb-2">分支合并</h4>
+                    <p class="text-slate-400 text-sm">简化的分支合并到test分支工作流</p>
+                </div>
+                <div class="bg-slate-800/50 rounded-xl p-6 border border-slate-700 hover:border-primary/50 transition-colors">
+                    <div class="w-12 h-12 bg-red-500/20 rounded-lg flex items-center justify-center mb-4 text-red-400">
+                        <i class="fa-solid fa-file-shield text-xl"></i>
+                    </div>
+                    <h4 class="text-lg font-semibold text-white mb-2">Gitignore生成</h4>
+                    <p class="text-slate-400 text-sm">为不同项目类型生成合适的 .gitignore 模板</p>
+                </div>
+                <div class="bg-slate-800/50 rounded-xl p-6 border border-slate-700 hover:border-primary/50 transition-colors">
+                    <div class="w-12 h-12 bg-cyan-500/20 rounded-lg flex items-center justify-center mb-4 text-cyan-400">
+                        <i class="fa-solid fa-upload text-xl"></i>
+                    </div>
+                    <h4 class="text-lg font-semibold text-white mb-2">智能Push</h4>
+                    <p class="text-slate-400 text-sm">表格展示文件变更、统计信息，智能选择AI/常规提交</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 安装 -->
+        <section class="glass-effect rounded-2xl p-8 border border-slate-700">
+            <h3 class="text-2xl font-bold text-white mb-6">
+                <i class="fa-solid fa-box-open mr-2 text-primary"></i>📦 安装
+            </h3>
+            <div class="bg-slate-900 rounded-lg p-6 border border-slate-700">
+                <div class="flex items-center justify-between mb-4">
+                    <span class="text-xs font-mono text-slate-400">bash</span>
+                    <button class="text-xs text-slate-400 hover:text-white transition-colors" onclick="copyCode(this)">
+                        <i class="fa-regular fa-copy mr-1"></i>复制
+                    </button>
+                </div>
+                <pre class="text-slate-300 font-mono text-sm overflow-x-auto"><code># 全局安装
+npm install -g @niuyuan/git-ultra
+
+# 或使用yarn
+yarn global add @niuyuan/git-ultra</code></pre>
+            </div>
+        </section>
+
+        <!-- 配置 -->
+        <section class="glass-effect rounded-2xl p-8 border border-slate-700">
+            <h3 class="text-2xl font-bold text-white mb-6">
+                <i class="fa-solid fa-wrench mr-2 text-primary"></i>🔧 配置
+            </h3>
+            <div class="space-y-6">
+                <div>
+                    <h4 class="text-xl font-semibold text-white mb-4">配置 AI 服务（三选一）</h4>
+                    
+                    <div class="space-y-4">
+                        <div class="bg-slate-800/50 rounded-xl p-6 border border-slate-700">
+                            <h5 class="text-lg font-semibold text-blue-400 mb-3">方式 1: GitHub Models（推荐，免费）</h5>
+                            <div class="bg-slate-900 rounded-lg p-4 border border-slate-700">
+                                <div class="flex items-center justify-between mb-3">
+                                    <span class="text-xs font-mono text-slate-400">bash</span>
+                                    <button class="text-xs text-slate-400 hover:text-white transition-colors" onclick="copyCode(this)">
+                                        <i class="fa-regular fa-copy mr-1"></i>复制
+                                    </button>
+                                </div>
+                                <pre class="text-slate-300 font-mono text-sm overflow-x-auto"><code># 1. 创建 GitHub Token
+# 访问: https://github.com/settings/tokens
+# 生成新 token（不需要勾选权限）
+
+# 2. 设置环境变量
+export GITHUB_TOKEN=ghp_your-token-here
+
+# 完成！自动使用 GPT-4o-mini（免费）</code></pre>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-800/50 rounded-xl p-6 border border-slate-700">
+                            <h5 class="text-lg font-semibold text-purple-400 mb-3">方式 2: DeepSeek API（付费）</h5>
+                            <div class="bg-slate-900 rounded-lg p-4 border border-slate-700">
+                                <div class="flex items-center justify-between mb-3">
+                                    <span class="text-xs font-mono text-slate-400">bash</span>
+                                    <button class="text-xs text-slate-400 hover:text-white transition-colors" onclick="copyCode(this)">
+                                        <i class="fa-regular fa-copy mr-1"></i>复制
+                                    </button>
+                                </div>
+                                <pre class="text-slate-300 font-mono text-sm overflow-x-auto"><code># Linux/macOS
+export DEEPSEEK_API_KEY=your-api-key-here
+
+# Windows PowerShell
+$env:DEEPSEEK_API_KEY="your-api-key-here"
+
+# Windows CMD
+set DEEPSEEK_API_KEY=your-api-key-here</code></pre>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-800/50 rounded-xl p-6 border border-slate-700">
+                            <h5 class="text-lg font-semibold text-green-400 mb-3">方式 3: Ollama（本地免费）</h5>
+                            <div class="bg-slate-900 rounded-lg p-4 border border-slate-700">
+                                <div class="flex items-center justify-between mb-3">
+                                    <span class="text-xs font-mono text-slate-400">bash</span>
+                                    <button class="text-xs text-slate-400 hover:text-white transition-colors" onclick="copyCode(this)">
+                                        <i class="fa-regular fa-copy mr-1"></i>复制
+                                    </button>
+                                </div>
+                                <pre class="text-slate-300 font-mono text-sm overflow-x-auto"><code># 1. 安装 Ollama
+# https://ollama.ai
+
+# 2. 启动服务
+ollama serve
+
+# 3. 下载模型
+ollama pull llama2
+
+# 完成！自动使用本地 AI</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 使用方法 -->
+        <section class="glass-effect rounded-2xl p-8 border border-slate-700">
+            <h3 class="text-2xl font-bold text-white mb-6">
+                <i class="fa-solid fa-rocket mr-2 text-primary"></i>🚀 使用方法
+            </h3>
+            <div class="bg-slate-900 rounded-lg p-6 border border-slate-700">
+                <h4 class="text-lg font-semibold text-white mb-4">基本命令</h4>
+                <div class="flex items-center justify-between mb-3">
+                    <span class="text-xs font-mono text-slate-400">bash</span>
+                    <button class="text-xs text-slate-400 hover:text-white transition-colors" onclick="copyCode(this)">
+                        <i class="fa-regular fa-copy mr-1"></i>复制
+                    </button>
+                </div>
+                <pre class="text-slate-300 font-mono text-sm overflow-x-auto"><code># AI辅助提交（推荐）
+git-ultra commit
+git-ultra c              # 别名
+
+# AI辅助提交
+git-ultra ai-commit
+git-ultra aic            # 别名
+
+# 规范化提交
+git-ultra conventional-commit
+git-ultra cc             # 别名
+
+# 创建版本标签
+git-ultra tag
+
+# 合并到test分支
+git-ultra merge-test
+
+# 生成.gitignore
+git-ultra gitignore
+git-ultra gi             # 别名
+
+# 智能Push（表格展示+AI/常规选择）
+git-ultra push
+git-ultra p              # 别名</code></pre>
+            </div>
+        </section>
+
+        <!-- 提交规范 -->
+        <section class="glass-effect rounded-2xl p-8 border border-slate-700">
+            <h3 class="text-2xl font-bold text-white mb-6">
+                <i class="fa-solid fa-list-check mr-2 text-primary"></i>📋 提交规范
+            </h3>
+            <p class="text-slate-300 mb-6">
+                工具遵循 <a href="https://www.conventionalcommits.org/" target="_blank" class="text-blue-400 hover:underline">Conventional Commits</a> 规范：
+            </p>
+            
+            <div class="space-y-6">
+                <div>
+                    <h4 class="text-xl font-semibold text-white mb-4">提交类型</h4>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                        <div class="bg-slate-800/50 rounded-lg p-4 border border-slate-700">
+                            <code class="text-green-400 font-mono">feat</code>
+                            <p class="text-slate-400 text-sm mt-1">新功能</p>
+                        </div>
+                        <div class="bg-slate-800/50 rounded-lg p-4 border border-slate-700">
+                            <code class="text-green-400 font-mono">fix</code>
+                            <p class="text-slate-400 text-sm mt-1">修复bug</p>
+                        </div>
+                        <div class="bg-slate-800/50 rounded-lg p-4 border border-slate-700">
+                            <code class="text-green-400 font-mono">docs</code>
+                            <p class="text-slate-400 text-sm mt-1">文档变更</p>
+                        </div>
+                        <div class="bg-slate-800/50 rounded-lg p-4 border border-slate-700">
+                            <code class="text-green-400 font-mono">style</code>
+                            <p class="text-slate-400 text-sm mt-1">代码格式</p>
+                        </div>
+                        <div class="bg-slate-800/50 rounded-lg p-4 border border-slate-700">
+                            <code class="text-green-400 font-mono">refactor</code>
+                            <p class="text-slate-400 text-sm mt-1">代码重构</p>
+                        </div>
+                        <div class="bg-slate-800/50 rounded-lg p-4 border border-slate-700">
+                            <code class="text-green-400 font-mono">test</code>
+                            <p class="text-slate-400 text-sm mt-1">测试相关</p>
+                        </div>
+                        <div class="bg-slate-800/50 rounded-lg p-4 border border-slate-700">
+                            <code class="text-green-400 font-mono">chore</code>
+                            <p class="text-slate-400 text-sm mt-1">构建工具</p>
+                        </div>
+                        <div class="bg-slate-800/50 rounded-lg p-4 border border-slate-700">
+                            <code class="text-green-400 font-mono">perf</code>
+                            <p class="text-slate-400 text-sm mt-1">性能优化</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <h4 class="text-xl font-semibold text-white mb-4">提交格式</h4>
+                    <div class="bg-slate-900 rounded-lg p-6 border border-slate-700">
+                        <pre class="text-slate-300 font-mono text-sm"><code>&lt;type&gt;(&lt;scope&gt;): &lt;subject&gt;
+
+&lt;body&gt;
+
+&lt;footer&gt;</code></pre>
+                    </div>
+                </div>
+
+                <div class="bg-gradient-to-r from-blue-500/10 to-purple-500/10 border-l-4 border-blue-500 rounded-r-xl p-6">
+                    <h5 class="text-lg font-semibold text-white mb-3">示例：</h5>
+                    <div class="bg-slate-900 rounded-lg p-4 border border-slate-700">
+                        <pre class="text-slate-300 font-mono text-sm"><code>feat(user): 添加用户登录功能
+
+实现基于JWT的用户认证系统
+- 支持邮箱和密码登录
+- 实现token刷新机制
+
+Closes #123</code></pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 开发 -->
+        <section class="glass-effect rounded-2xl p-8 border border-slate-700">
+            <h3 class="text-2xl font-bold text-white mb-6">
+                <i class="fa-solid fa-hammer mr-2 text-primary"></i>🔨 开发
+            </h3>
+            <div class="bg-slate-900 rounded-lg p-6 border border-slate-700">
+                <div class="flex items-center justify-between mb-3">
+                    <span class="text-xs font-mono text-slate-400">bash</span>
+                    <button class="text-xs text-slate-400 hover:text-white transition-colors" onclick="copyCode(this)">
+                        <i class="fa-regular fa-copy mr-1"></i>复制
+                    </button>
+                </div>
+                <pre class="text-slate-300 font-mono text-sm overflow-x-auto"><code># 克隆项目
+git clone &lt;repository-url&gt;
+cd git-ultra
+
+# 安装依赖
+npm install
+
+# 开发模式
+npm run dev
+
+# 构建项目
+npm run build
+
+# 监听模式
+npm run watch</code></pre>
+            </div>
+        </section>
+
+        <!-- 本地测试 -->
+        <section class="glass-effect rounded-2xl p-8 border border-slate-700">
+            <h3 class="text-2xl font-bold text-white mb-6">
+                <i class="fa-solid fa-vial mr-2 text-primary"></i>📝 本地测试
+            </h3>
+            <div class="bg-slate-900 rounded-lg p-6 border border-slate-700">
+                <div class="flex items-center justify-between mb-3">
+                    <span class="text-xs font-mono text-slate-400">bash</span>
+                    <button class="text-xs text-slate-400 hover:text-white transition-colors" onclick="copyCode(this)">
+                        <i class="fa-regular fa-copy mr-1"></i>复制
+                    </button>
+                </div>
+                <pre class="text-slate-300 font-mono text-sm overflow-x-auto"><code># 链接到全局
+npm link
+
+# 测试命令
+git-ultra commit
+
+# 取消链接
+npm unlink</code></pre>
+            </div>
+        </section>
+
+        <!-- 高级特性 -->
+        <section class="glass-effect rounded-2xl p-8 border border-slate-700">
+            <h3 class="text-2xl font-bold text-white mb-6">
+                <i class="fa-solid fa-star mr-2 text-primary"></i>🌟 高级特性
+            </h3>
+            <div class="space-y-6">
+                <div>
+                    <h4 class="text-xl font-semibold text-white mb-4">AI提交信息生成</h4>
+                    <p class="text-slate-300 mb-4">AI服务会分析你的代码变更，并自动生成：</p>
+                    <ul class="space-y-2 text-slate-300">
+                        <li class="flex items-start">
+                            <i class="fa-solid fa-check text-green-400 mt-1 mr-3"></i>
+                            <span>符合Conventional Commits规范的提交信息</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fa-solid fa-check text-green-400 mt-1 mr-3"></i>
+                            <span>准确的提交类型识别</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fa-solid fa-check text-green-400 mt-1 mr-3"></i>
+                            <span>合适的影响范围</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fa-solid fa-check text-green-400 mt-1 mr-3"></i>
+                            <span>清晰的变更描述</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="text-xl font-semibold text-white mb-4">智能错误处理</h4>
+                    <ul class="space-y-2 text-slate-300">
+                        <li class="flex items-start">
+                            <i class="fa-solid fa-check text-blue-400 mt-1 mr-3"></i>
+                            <span>合并冲突时提供清晰的指引</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fa-solid fa-check text-blue-400 mt-1 mr-3"></i>
+                            <span>网络错误时显示详细的错误信息</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fa-solid fa-check text-blue-400 mt-1 mr-3"></i>
+                            <span>未设置API Key时提供配置提示</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- 贡献 -->
+        <section class="glass-effect rounded-2xl p-8 border border-slate-700">
+            <h3 class="text-2xl font-bold text-white mb-6">
+                <i class="fa-solid fa-handshake mr-2 text-primary"></i>🤝 贡献
+            </h3>
+            <p class="text-slate-300 mb-6">欢迎提交Issue和Pull Request！</p>
+            <div class="bg-gradient-to-r from-blue-500/10 to-purple-500/10 border-l-4 border-blue-500 rounded-r-xl p-6">
+                <h4 class="text-lg font-semibold text-white mb-3">📮 反馈</h4>
+                <p class="text-slate-300">
+                    如有问题或建议,请提交 
+                    <a href="https://github.com/niuyuan0523/git-ultra/issues" target="_blank" class="text-blue-400 hover:underline">
+                        Issue
+                    </a>
+                </p>
+            </div>
+        </section>
+    </main>
+
+    <!-- 页脚 -->
+    <footer class="border-t border-slate-800 mt-12 py-8 text-center text-slate-500 text-sm">
+        <p class="mb-2"><strong class="text-slate-400">Git Ultra</strong> - 让Git提交更智能、更规范</p>
+        <p>MIT License | Made with <i class="fa-solid fa-heart text-red-500"></i></p>
+        <div class="mt-4 space-x-4">
+            <a href="https://github.com/Niuyuan0523/git-ultra" target="_blank" class="hover:text-white transition-colors">
+                <i class="fa-brands fa-github"></i> GitHub
+            </a>
+            <a href="../index.html" class="hover:text-white transition-colors">
+                <i class="fa-solid fa-house"></i> 返回首页
+            </a>
+        </div>
+    </footer>
+
+    <!-- 复制代码功能 -->
+    <script>
+        function copyCode(button) {
+            const pre = button.closest('div').querySelector('pre');
+            const code = pre.querySelector('code');
+            const text = code.innerText;
+            
+            navigator.clipboard.writeText(text).then(() => {
+                const originalText = button.innerHTML;
+                button.innerHTML = '<i class="fa-solid fa-check mr-1"></i>已复制';
+                button.classList.add('text-green-400');
+                
+                setTimeout(() => {
+                    button.innerHTML = originalText;
+                    button.classList.remove('text-green-400');
+                }, 2000);
+            }).catch(err => {
+                console.error('复制失败:', err);
+            });
+        }
+    </script>
+
+</body>
+</html>

@@ -76,6 +76,16 @@ const projectsConfig = {
             status: "active"
         },
         {
+            id: "git-ultra",
+            title: "Git Ultra - 智能Git工作流",
+            description: "功能强大的Git命令行工具，集成AI辅助提交信息生成，支持Conventional Commits规范，提高团队开发效率。",
+            tech: "Node.js / AI / CLI",
+            icon: "fa-git-alt",
+            color: "orange",
+            url: "./git-ultra/index.html",
+            status: "active"
+        },
+        {
             id: "project-d",
             title: "更多项目...",
             description: "正在开发中。后续将在此处添加更多演示项目，如 Node.js 全栈应用或其他创意项目。",
