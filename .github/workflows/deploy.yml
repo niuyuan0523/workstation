@@ -121,7 +121,16 @@ jobs:
             echo "✗ Warning: 3d-display/dist folder not found"
           fi
           
-          # 3. 最后复制 hive-ui 文件到 build/hive-ui/ 目录
+          # 3. 复制 git-ultra 静态页面
+          if [ -d "git-ultra" ]; then
+            mkdir -p build/git-ultra
+            cp -r git-ultra/* build/git-ultra/
+            echo "✓ Copied git-ultra files to build/git-ultra/"
+          else
+            echo "✗ Warning: git-ultra folder not found"
+          fi
+          
+          # 4. 最后复制 hive-ui 文件到 build/hive-ui/ 目录
           if [ -d "hive-ui" ] && [ "$(ls -A hive-ui 2>/dev/null)" ]; then
             mkdir -p build/hive-ui
             rsync -av --ignore-existing hive-ui/ build/hive-ui/
