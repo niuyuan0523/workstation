@@ -96,7 +96,7 @@ body {
 }
 
 .axesHelper-button {
-    padding: 12px 24px;
+    padding: 24px 24px;
     border: none;
     border-radius: 8px;
     background: linear-gradient(145deg, #27AE60, #229954);
@@ -109,6 +109,7 @@ body {
     box-shadow: 0 4px 15px rgba(39, 174, 96, 0.3);
     position: relative;
     overflow: hidden;
+    min-width: 150px;
 }
 
 .axesHelper-button::before {
