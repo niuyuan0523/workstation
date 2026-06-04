@@ -25,11 +25,13 @@ workstation/
 ├── .github/
 │   └── workflows/
 │       └── deploy.yml  # GitHub Actions 部署配置
-└── 3d-display/         # 子项目：3D 晶体结构可视化
-    ├── src/            # 源代码
-    ├── package.json    # 项目依赖
-    ├── vite.config.js  # Vite 配置
-    └── README.md       # 子项目说明
+├── 3d-display/         # 子项目：3D 晶体结构可视化
+│   ├── src/            # 源代码
+│   ├── package.json    # 项目依赖
+│   ├── vite.config.js  # Vite 配置
+│   └── README.md       # 子项目说明
+└── git-ultra/          # 子项目：Git Ultra 文档页面
+    └── index.html      # Git Ultra 项目介绍页面
 ```
 
 ## 🚦 快速开始
@@ -81,16 +83,16 @@ npm run build
 - `orange` - 橙色渐变（适合创新类项目）
 - `slate` - 灰色（用于未上线项目）
 
-## 🌐 部署到 GitHub Pages
-
-### 自动化部署
+## 🚀 自动化部署
 
 项目已配置 GitHub Actions，推送到主分支后自动部署：
 
 1. 将代码推送到 GitHub 仓库的 `main` 分支
 2. GitHub Actions 自动执行以下操作：
    - 构建 3D 展示项目（`3d-display`）
-   - 准备部署目录（包含主页和子项目）
+   - 复制 git-ultra 静态页面
+   - 下载并解压 hive-ui 资源
+   - 准备部署目录（包含主页和所有子项目）
    - 自动部署到 GitHub Pages
 3. 访问 `https://username.github.io/repo-name/`
 
@@ -110,10 +112,12 @@ npm run build
 /
 ├── index.html              # 主页面
 ├── projects.js             # 项目配置
-└── 3d-display/             # 3D 展示子项目
-    ├── assets/
-    ├── index.html
-    └── ...
+├── 3d-display/             # 3D 展示子项目
+│   ├── assets/
+│   ├── index.html
+│   └── ...
+└── git-ultra/              # Git Ultra 文档页面
+    └── index.html
 ```
 
 ### 注意事项
@@ -136,6 +140,8 @@ npm run build
 | 项目 | 描述 | 技术栈 | 状态 |
 |------|------|--------|------|
 | [3D 晶体结构可视化](./3d-display/) | 交互式 3D 晶体结构展示 | Three.js / Vite | ✅ 已完成 |
+| [Git Ultra](https://github.com/niuyuan0523/git-ultra) | AI 辅助的 Git 工作流增强工具 | Node.js / AI / CLI | ✅ 已完成 |
+| [Hive-UI 组件库](https://github.com/niuyuan0523/hive-ui) | Vue 3 组件库展示 | Vue 3 / Vite | 🚧 开发中 |
 | Vue 3 管理系统 | 后台管理模板（待添加） | Vue 3 / Vite | 🚧 开发中 |
 | React 电商前台 | 电商展示页面（待添加） | React / Tailwind | 🚧 开发中 |
 
@@ -178,7 +184,7 @@ chore: 构建/工具相关
 
 **Niu Yuan**
 
-- GitHub: [@Niuyuan0523](https://github.com/Niuyuan0523)
+- GitHub: [@niuyuan0523](https://github.com/niuyuan0523)
 
 ## 🙏 致谢
 
